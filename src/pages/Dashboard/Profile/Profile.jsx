@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import useAuth from "@/hooks/useAuth";
+import axios from "axios";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -17,11 +18,18 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    const storedUser = localStorage.getItem(user?.email);
-    if (storedUser) {
-      const savedProfile = JSON.parse(storedUser);
-      setProfile({ ...profile, ...savedProfile });
+    async function getUser() {
+      const userData = await axios.get(
+        `https://daily-hut-backend.vercel.app/user/${user.email}`
+      );
+      if (userData) {
+        let { _id, ...fetchedData } = userData.data;
+        console.log(fetchedData);
+        setProfile({ ...profile, ...fetchedData });
+      }
     }
+    getUser();
+    console.log(profile);
   }, [user]);
 
   const handleProfileEditToggle = () => {
@@ -40,10 +48,18 @@ const Profile = () => {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (user?.email) {
-      localStorage.setItem(user.email, JSON.stringify(profile));
+      try {
+        const result = await axios.patch(
+          `https://daily-hut-backend.vercel.app/user/${user.email}`,
+          profile
+        );
+      } catch (e) {
+        console.log(e);
+      }
     }
+
     setIsEditingProfile(false);
     setIsEditingAddress(false);
   };

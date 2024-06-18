@@ -1,23 +1,44 @@
-import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 import useAuth from "@/hooks/useAuth";
 import ConfirmModal from "@/components/Shared/ConfirmModal";
+import useModal from "../../hooks/useModal";
+import axios from "axios";
 
 const AddCategory = () => {
   const token = localStorage.getItem("token");
   const { user } = useAuth();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isModalOpen, openModal, closeModal } = useModal();
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState({
+    addedBy: user?.email,
+    name: "",
+    image_url: "",
+    itemsCount: 0,
+    subCategories: [],
+  });
+  const [subCategoryInput, setSubCategoryInput] = useState("");
 
   const navigate = useNavigate();
-  const [newCategory, setNewCategory] = useState({
-    userMail: user?.email,
-    name: "",
-    description: "",
-    image: "",
-  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/v1/category"
+        );
+        if (response.status === 200) {
+          setCategories(response.data.data);
+        } else {
+          // Handle other status codes
+        }
+      } catch (error) {
+        // Handle error
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,12 +48,35 @@ const AddCategory = () => {
     }));
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
+  const handleSubCategoryInputChange = (e) => {
+    setSubCategoryInput(e.target.value);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const handleSubCategoryKeyPress = (e) => {
+    if ((e.key === "Enter" || e.key === " ") && subCategoryInput.trim()) {
+      e.preventDefault();
+      if (/^[a-zA-Z\s]+$/.test(subCategoryInput.trim())) {
+        setNewCategory((prevCategory) => ({
+          ...prevCategory,
+          subCategories: [
+            ...prevCategory.subCategories,
+            subCategoryInput.trim(),
+          ],
+        }));
+        setSubCategoryInput("");
+      } else {
+        toast.error("Subcategory must contain only letters.", {
+          autoClose: 2000,
+        });
+      }
+    }
+  };
+
+  const handleRemoveSubCategory = (index) => {
+    setNewCategory((prevCategory) => ({
+      ...prevCategory,
+      subCategories: prevCategory.subCategories.filter((_, i) => i !== index),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -42,47 +86,76 @@ const AddCategory = () => {
 
   const handleAddCategory = async () => {
     try {
-      await fetch("https://daily-hut-backend.vercel.app/categories", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(newCategory),
-      })
-        .then((res) => res.json())
-        .then((data) => {});
-      toast.success("Category Added Successfully!");
-      setNewCategory({
-        userMail: user?.email,
-        name: "",
-        itemsCount: 0,
-        description: "",
-        image_url: "",
-      });
+      let matched = categories.find(
+        (c) => c.name.toLowerCase() === newCategory.name.toLowerCase()
+      );
+      if (matched) {
+        const response = await fetch(
+          `http://localhost:5000/categories/${matched._id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-type": "application/json",
+              authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(newCategory),
+          }
+        );
+        const data = await response.json();
+        if (response.ok) {
+          toast.success("Category Added Successfully!", { autoClose: 2000 });
+          setNewCategory({
+            addedBy: user?.email,
+            name: "",
+            image_url: "",
+            itemsCount: 0,
+            subCategories: [],
+          });
+          setTimeout(() => {
+            navigate("/dashboard/all-categories");
+          }, 1000);
+        } else {
+          toast.error("Failed to Add new Category!", { autoClose: 3000 });
+          console.log("Failed to add category:", data);
+        }
+      } else {
+        const response = await fetch("http://localhost:5000/api/v1/category", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(newCategory),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          toast.success("Category Added Successfully!", { autoClose: 2000 });
+          setNewCategory({
+            addedBy: user?.email,
+            name: "",
+            image_url: "",
+            itemsCount: 0,
+            subCategories: [],
+          });
+          setTimeout(() => {
+            navigate("/dashboard/all-categories");
+          }, 1000);
+        } else {
+          toast.error("Failed to Add new Category!", { autoClose: 3000 });
+          console.log("Failed to add category:", data);
+        }
+      }
     } catch (e) {
-      console.log("Failed to add");
-      toast.error("Failed to Add new Category!");
+      console.log("Failed to add category:", e);
+      toast.error("Failed to Add new Category!", { autoClose: 3000 });
     } finally {
       closeModal();
     }
-    setTimeout(() => {
-      navigate("/dashboard/all-categories");
-    }, 1000);
   };
+
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <ToastContainer
-        position="top-right"
-        autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer />
       <div className="bg-white shadow-md rounded-lg p-6">
         <h2 className="text-2xl font-bold mb-4">Add Category</h2>
         <form onSubmit={handleSubmit}>
@@ -92,20 +165,40 @@ const AddCategory = () => {
               type="text"
               name="name"
               placeholder="Sherwani"
+              value={newCategory.name}
               onChange={handleChange}
               className="border p-2 rounded w-full"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">Description</label>
-            <textarea
-              placeholder="Write a small description.."
-              name="description"
-              onChange={handleChange}
+            <label className="block text-gray-700">Sub Categories</label>
+            <input
+              type="text"
+              name="subCategoryInput"
+              placeholder="Add subcategory and press enter or space"
+              value={subCategoryInput}
+              onChange={handleSubCategoryInputChange}
+              onKeyPress={handleSubCategoryKeyPress}
               className="border p-2 rounded w-full"
-              required
             />
+            <div className="mt-2 flex flex-wrap gap-2">
+              {newCategory.subCategories.map((subCategory, index) => (
+                <div
+                  key={index}
+                  className="bg-blue-500 text-white px-3 py-1 rounded-full flex items-center"
+                >
+                  <span>{subCategory}</span>
+                  <button
+                    type="button"
+                    className="ml-2 text-white"
+                    onClick={() => handleRemoveSubCategory(index)}
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700">Image URL</label>
@@ -113,8 +206,10 @@ const AddCategory = () => {
               type="text"
               name="image_url"
               placeholder="https://m.media-amazon.com/images/I/515c+nXHjQL._AC_SY741_.jpg"
+              value={newCategory.image_url}
               onChange={handleChange}
               className="border p-2 rounded w-full"
+              required
             />
           </div>
           <button
@@ -135,9 +230,9 @@ const AddCategory = () => {
       <ConfirmModal
         action={"Add"}
         actionOn={"Category"}
-        isOpen={isModalOpen}
-        onClose={closeModal}
         onConfirm={handleAddCategory}
+        onCancel={closeModal}
+        isModalOpen={isModalOpen}
       />
     </div>
   );

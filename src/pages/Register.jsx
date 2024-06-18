@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const Register = () => {
   const { createUser, user, googleLogin } = useAuth();
@@ -43,7 +44,12 @@ const Register = () => {
 
     if (password === confirm_password) {
       try {
+        const data = { email, password, role: "member" };
         await createUser(email, password);
+        const res = await axios.post("http://localhost:5000/user", data);
+        if (res?.data) {
+          localStorage.setItem("token", res.data?.token);
+        }
       } catch (error) {
         if (error.code === "auth/email-already-in-use") {
           toast.error("Email is already in use!");

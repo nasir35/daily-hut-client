@@ -1,28 +1,43 @@
-import CategoryRow from "@/components/Shared/Dashboard/CategoryRow";
+import CategoryRow from "@/components/Dashboard/CategoryRow";
 import ConfirmModal from "@/components/Shared/ConfirmModal";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
+import useModal from "../../hooks/useModal";
 
 const AllCategory = () => {
   const token = localStorage.getItem("token");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState("");
   const [categories, setCategories] = useState(null);
-  useEffect(() => {
-    async function load() {
-      const data = await axios.get(
-        "https://daily-hut-backend.vercel.app/categories"
-      );
-      if (data?.status === 200) {
-        setCategories(data.data);
+  const [loading, setLoading] = useState(false);
+  const { isModalOpen, closeModal, openModal } = useModal();
+
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("http://localhost:5000/api/v1/category");
+      if (response.status === 200) {
+        setCategories(response.data.data);
+      } else {
+        toast.error("Failed to load categories.", { autoClose: 2000 });
       }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      toast.error("Failed to load categories.", { autoClose: 2000 });
+    } finally {
+      setLoading(false);
     }
-    load();
-  }, [categories]);
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   const deleteCategory = async () => {
     try {
-      const res = await axios.delete(
+      setLoading(true);
+      await axios.delete(
         `https://daily-hut-backend.vercel.app/categories/${idToDelete}`,
         {
           headers: {
@@ -30,41 +45,26 @@ const AllCategory = () => {
           },
         }
       );
-      setIdToDelete("");
-      toast.success("Deleted category Successfully");
-    } catch (e) {
-      toast.error("Deletion failed.");
+      toast.success("Deleted category successfully.", { autoClose: 2000 });
+      fetchCategories();
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      toast.error("Deletion failed.", { autoClose: 2000 });
     } finally {
       closeModal();
     }
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleDelete = (id_passed) => {
-    console.log(id_passed);
-    setIdToDelete(id_passed);
+  const handleDelete = (id) => {
+    setIdToDelete(id);
     openModal();
   };
+
+  if (loading) return <LoadingSpinner />;
+
   return (
     <div className="w-full overflow-x-auto">
-      <ToastContainer
-        position="top-right"
-        autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer />
       {categories?.length === 0 ? (
         <div className="w-full h-full lg:py-32 py-12 flex justify-center items-center">
           <h3 className="text-2xl font-semibold text-center text-blue-500">
@@ -73,7 +73,6 @@ const AllCategory = () => {
         </div>
       ) : (
         <table className="table w-full">
-          {/* head */}
           <thead className="bg-gray-300 w-full">
             <tr>
               <th>Sl no</th>
@@ -94,7 +93,6 @@ const AllCategory = () => {
                 />
               ))}
           </tbody>
-          {/* foot */}
           <tfoot className="bg-gray-300">
             <tr>
               <th>Sl no</th>
@@ -109,8 +107,8 @@ const AllCategory = () => {
       <ConfirmModal
         action={"Delete"}
         actionOn={"Category"}
-        isOpen={isModalOpen}
-        onClose={closeModal}
+        isModalOpen={isModalOpen}
+        onCancel={closeModal}
         onConfirm={deleteCategory}
       />
     </div>

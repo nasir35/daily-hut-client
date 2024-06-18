@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
   faBox,
-  faUser,
   faTags,
   faUsersCog,
   faChartLine,
@@ -14,6 +13,7 @@ import {
   faSquarePlus,
   faBars,
   faTimes,
+  faIndustry,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
@@ -30,8 +30,8 @@ const DashboardLayout = () => {
 
   const closeDropdown = () => {
     const dropdownContainer = document.getElementById("user-dropdown");
-    if (dropdownContainer.classList.contains("dropdown-open")) {
-      dropdownContainer.classList.remove("dropdown-open");
+    if (dropdownContainer?.classList?.contains("dropdown-open")) {
+      dropdownContainer?.classList?.remove("dropdown-open");
     }
   };
 
@@ -127,24 +127,24 @@ const DashboardLayout = () => {
             </li>
             <li>
               <Link
-                to="users"
+                to="add-brand"
                 className={`flex items-center justify-center lg:justify-start ${
-                  isActiveTab("/users") ? "bg-gray-700" : ""
+                  isActiveTab("/dashboard/add-brand") ? "text-yellow-300" : ""
                 }`}
               >
-                <FontAwesomeIcon icon={faUser} className="mr-0 lg:mr-2" />
-                <span className="hidden lg:block">Users</span>
+                <FontAwesomeIcon icon={faIndustry} className="mr-0 lg:mr-2" />
+                <span className="hidden lg:block">Add A Brand</span>
               </Link>
             </li>
             <li>
               <Link
-                to="admins"
+                to="manage-users"
                 className={`flex items-center justify-center lg:justify-start ${
-                  isActiveTab("/admins") ? "bg-gray-700" : ""
+                  isActiveTab("/manage-users") ? "bg-gray-700" : ""
                 }`}
               >
                 <FontAwesomeIcon icon={faUsersCog} className="mr-0 lg:mr-2" />
-                <span className="hidden lg:block">Admins</span>
+                <span className="hidden lg:block">Manage Users</span>
               </Link>
             </li>
             <li>
@@ -276,26 +276,26 @@ const DashboardLayout = () => {
               </li>
               <li>
                 <Link
-                  to="users"
+                  to="add-brand"
                   className={`flex items-center ${
-                    isActiveTab("/users") ? "bg-gray-700" : ""
+                    isActiveTab("/add-brand") ? "bg-gray-700" : ""
                   }`}
                   onClick={closeModal}
                 >
-                  <FontAwesomeIcon icon={faUser} className="mr-2" />
-                  Users
+                  <FontAwesomeIcon icon={faIndustry} className="mr-2" />
+                  Add A Brand
                 </Link>
               </li>
               <li>
                 <Link
-                  to="admins"
+                  to="manage-users"
                   className={`flex items-center ${
-                    isActiveTab("/admins") ? "bg-gray-700" : ""
+                    isActiveTab("/manage-users") ? "bg-gray-700" : ""
                   }`}
                   onClick={closeModal}
                 >
                   <FontAwesomeIcon icon={faUsersCog} className="mr-2" />
-                  Admins
+                  Manage Users
                 </Link>
               </li>
               <li>
@@ -360,6 +360,9 @@ const DashboardLayout = () => {
                     Profile
                     <span className="badge">New</span>
                   </Link>
+                </li>
+                <li onClick={closeDropdown}>
+                  <Link to="/dashboard/settings">Settings</Link>
                 </li>
                 <li onClick={closeDropdown}>
                   <button onClick={logOut}>Logout</button>

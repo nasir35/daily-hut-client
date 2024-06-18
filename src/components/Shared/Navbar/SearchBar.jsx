@@ -14,20 +14,6 @@ const SearchBar = () => {
 
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    async function loadProducts() {
-      try {
-        const response = await axios.get("http://localhost:3000/products");
-        if (response.status === 200) {
-          setProducts(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    }
-    loadProducts();
-  }, []);
-
   const debouncedSearch = (func, delay) => {
     let timeoutId;
     const debouncedFunc = function (...args) {
@@ -39,11 +25,18 @@ const SearchBar = () => {
   };
 
   const debouncedSearchFunction = useCallback(
-    debouncedSearch((query) => {
-      const matchedProducts = products.filter((product) =>
-        product.title.toLowerCase().includes(query.toLowerCase())
-      );
-      setSuggestions(matchedProducts.slice(0, 5));
+    debouncedSearch(async (query) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/v1/products/search-products?${query}`
+        );
+        if (response.status === 200) {
+          setProducts(response.data.data);
+        }
+        setSuggestions(response.data.data.slice(0, 5));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
     }, 500),
     [products]
   );
@@ -95,8 +88,8 @@ const SearchBar = () => {
                 className="px-4 py-2 hover:bg-gray-200"
                 onClick={handleSuggestionClick}
               >
-                <Link to={`/products/product-details/${product.id}`}>
-                  {product.title}
+                <Link to={`/products/product-details/${product._id}`}>
+                  {product.name}
                 </Link>
               </li>
             ))}

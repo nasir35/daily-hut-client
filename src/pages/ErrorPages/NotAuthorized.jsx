@@ -22,9 +22,9 @@ const NotAuthorized = () => {
         You are not authorized to access this page.
       </p>
       <div className="flex space-x-4">
-        <button className="btn btn-primary" onClick={handleGoBack}>
+        <Link to={"/dashboard"} className="btn btn-primary">
           Go Back
-        </button>
+        </Link>
         <button className="btn btn-outline" onClick={handleLoginAsAdmin}>
           Login As Admin
         </button>

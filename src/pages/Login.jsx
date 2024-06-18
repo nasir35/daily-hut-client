@@ -4,6 +4,7 @@ import useAuth from "../hooks/useAuth";
 import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const Login = () => {
   const { user, signIn, googleLogin } = useAuth();
@@ -16,9 +17,15 @@ const Login = () => {
     try {
       const data = {
         email: e.target.querySelector("input[type=email]").value,
-        pass: e.target.querySelector("input[type = password]").value,
+        password: e.target.querySelector("input[type = password]").value,
+        role: "member",
       };
-      await signIn(data.email, data.pass);
+      await signIn(data.email, data.password);
+      const res = await axios.post("http://localhost:5000/user", data);
+      console.log(res);
+      if (res?.data) {
+        localStorage.setItem("token", res.data?.token);
+      }
     } catch (e) {
       toast.error(`Login Failed due to ${e.code}`);
     }
@@ -30,6 +37,7 @@ const Login = () => {
         const userInfo = {
           email: data?.user?.email,
           name: data?.user?.displayName,
+          role: "member",
         };
         fetch("https://daily-hut-backend.vercel.app/user", {
           method: "POST",

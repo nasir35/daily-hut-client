@@ -9,8 +9,12 @@ const CategoryRow = ({ category, index, handleDelete }) => {
       <td>
         <div className="flex items-center gap-3">
           <div className="avatar">
-            <div className="mask mask-squircle w-12 h-12">
-              <img src={image_url} alt={name} />
+            <div className="mask mask-squircle w-12 h-12 object-contain">
+              <img
+                src={image_url}
+                alt={name}
+                className="w-full object-contain"
+              />
             </div>
           </div>
         </div>

@@ -62,6 +62,7 @@ const Navbar = () => {
   const handleSearchIconClick = () => {
     setShowSearchBar(!showSearchBar);
   };
+
   return (
     <div className="navbar xl:px-5 lg:px-4 md:px-3 px-2 lg:flex-row md:flex-col flex-row  sticky top-0 z-10 opacity-100 bg-base-200">
       <div className="w-full flex justify-between flex-wrap max-w-[1440px] mx-auto">
@@ -143,11 +144,16 @@ const Navbar = () => {
             >
               <div className="card-body">
                 <span className="font-bold text-lg">{cartCount} Items</span>
-                <span className="text-info">Subtotal: ${totalPrice}</span>
+                <span className="text-info">
+                  Subtotal: ${parseFloat(totalPrice)}
+                </span>
                 <div className="card-actions">
-                  <button className="btn btn-primary btn-block">
+                  <Link
+                    to={"/dashboard/view-cart"}
+                    className="btn btn-primary btn-block"
+                  >
                     View cart
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -179,9 +185,9 @@ const Navbar = () => {
                     <span className="badge">New</span>
                   </Link>
                 </li>
-                {/* <li onClick={closeDropdown}>
-                <a>Settings</a>
-              </li> */}
+                <li onClick={closeDropdown}>
+                  <Link to="/dashboard/settings">Settings</Link>
+                </li>
                 <li onClick={closeDropdown}>
                   <button onClick={logOut}>Logout</button>
                 </li>

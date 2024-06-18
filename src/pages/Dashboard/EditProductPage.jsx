@@ -1,123 +1,58 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import Select from "react-select";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Select from "react-select";
 import ConfirmModal from "@/components/Shared/ConfirmModal";
-import useAuth from "@/hooks/useAuth";
 import useModal from "../../hooks/useModal";
 
-const AddProduct = () => {
-  const { user } = useAuth();
+const EditProductPage = () => {
   const token = localStorage.getItem("token");
-  const initialProductState = {
-    addedBy: user?.email,
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [product, setProduct] = useState({
     name: "",
     brand: "",
+    category: "",
     price: "",
     quantity: "",
     rating: "",
-    category: "",
-    subcategory: "",
     description: "",
     image_urls: [""],
-  };
+  });
 
-  const [product, setProduct] = useState(initialProductState);
-  const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [subcategories, setSubcategories] = useState([]);
   const { isModalOpen, openModal, closeModal } = useModal();
 
   useEffect(() => {
-    async function loadCategoriesAndBrands() {
-      const fetchedCategories = await axios.get(
-        "http://localhost:5000/api/v1/category"
-      );
-      if (fetchedCategories.status === 200) {
+    async function load() {
+      const data = await axios.get(`http://localhost:5000/products/${id}`);
+      setProduct(data?.data);
+    }
+    load();
+  }, [id]);
+
+  useEffect(() => {
+    async function load() {
+      const data = await axios.get("http://localhost:5000/categories");
+      if (data.status === 200) {
         setCategories(
-          fetchedCategories?.data?.data?.map((category) => ({
-            value: category._id,
+          data.data.map((category) => ({
+            value: category.id,
             label: category.name,
           }))
         );
       }
-      const fetchedBrands = await axios.get(
-        "http://localhost:5000/api/v1/brands"
-      );
-      if (fetchedBrands.status === 200) {
-        setBrands(
-          fetchedBrands?.data?.data?.map((brand) => ({
-            value: brand._id,
-            label: brand.name,
-          }))
-        );
-      }
     }
-    loadCategoriesAndBrands();
+    load();
   }, []);
 
-  const handleBrandChange = (selectedOption) => {
-    setProduct({
-      ...product,
-      brand: selectedOption ? selectedOption.label : "",
-    });
-  };
-  const handleCategoryChange = async (selectedOption) => {
+  const handleCategoryChange = (selectedOption) => {
     setProduct({
       ...product,
       category: selectedOption ? selectedOption.label : "",
-      subcategory: "",
     });
-    if (selectedOption) {
-      const data = await axios.get(
-        `http://localhost:5000/api/v1/category/subcategories/${selectedOption.value}`
-      );
-      if (data.status === 200) {
-        setSubcategories(
-          data.data.data.map((subcategory) => ({
-            value: subcategory,
-            label: subcategory,
-          }))
-        );
-      }
-    } else {
-      setSubcategories([]);
-    }
-  };
-
-  const handleSubcategoryChange = (selectedOption) => {
-    setProduct({
-      ...product,
-      subcategory: selectedOption ? selectedOption.label : "",
-    });
-  };
-
-  const handleAddProduct = async () => {
-    try {
-      const res = await axios.post(
-        `http://localhost:5000/api/v1/products/`,
-        product,
-        {
-          headers: {
-            authorization: "Bearer " + token,
-          },
-        }
-      );
-      if (res.status === 200) {
-        toast.success("Product added successfully!", { autoClose: 3000 });
-        setProduct(initialProductState);
-      }
-    } catch (error) {
-      toast.error("Failed to add product.", { autoClose: 2000 });
-      console.error(error);
-    }
-    closeModal();
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    openModal();
   };
 
   const handleChange = (e) => {
@@ -129,20 +64,40 @@ const AddProduct = () => {
     }
   };
 
+  const handleSave = async () => {
+    const { _id, ...productWithoutId } = product;
+    await fetch(`http://localhost:5000/products/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(productWithoutId),
+    });
+    toast.success("Product Details Updated!", { autoClose: 2500 });
+    setTimeout(() => {
+      navigate("/dashboard/all-products");
+    }, 1000);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    openModal();
+  };
+
   return (
-    <div className="min-h-fit bg-gray-100 flex">
+    <div className="max-w-4xl mx-auto p-4">
       <ToastContainer />
-      <div className="lg:w-2/3 w-full mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-center">Add Product</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex gap-3 items-center">
+      <div className="bg-white shadow-md rounded-lg p-6">
+        <h2 className="text-2xl font-bold mb-4 ">Edit Product</h2>
+        <div className="space-y-4">
+          <div className="flex gap-3 items-center ">
             <label className="w-24 block text-sm font-medium text-gray-700">
-              Title
+              Name
             </label>
             <input
               type="text"
               name="name"
-              placeholder="product name"
+              placeholder="Kashmiri Punjabi"
               value={product.name}
               onChange={handleChange}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -153,14 +108,13 @@ const AddProduct = () => {
             <label className="w-24 block text-sm font-medium text-gray-700">
               Brand
             </label>
-            <Select
-              value={brands.find((option) => option.label === product.brand)}
-              onChange={handleBrandChange}
-              options={brands}
-              className="mt-1 block w-full"
-              classNamePrefix="react-select"
-              isClearable
-              placeholder="Select or type to search..."
+            <input
+              type="text"
+              name="brand"
+              placeholder="Kashmiri"
+              value={product.brand}
+              onChange={handleChange}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               required
             />
           </div>
@@ -185,7 +139,6 @@ const AddProduct = () => {
             <input
               type="number"
               name="quantity"
-              placeholder="10"
               value={product.quantity}
               onChange={handleChange}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 custom-number-input"
@@ -199,7 +152,6 @@ const AddProduct = () => {
             <input
               type="number"
               name="rating"
-              placeholder="10"
               value={product.rating}
               onChange={handleChange}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 custom-number-input"
@@ -222,25 +174,6 @@ const AddProduct = () => {
               placeholder="Select or type to search..."
               required
             />
-          </div>
-          <div className="flex gap-3 items-center">
-            <label className="w-24 block text-sm font-medium text-gray-700">
-              Subcategory
-            </label>
-            <div className="flex-1 relative">
-              <Select
-                value={subcategories.find(
-                  (option) => option.label === product.subcategory
-                )}
-                onChange={handleSubcategoryChange}
-                options={subcategories}
-                className="mt-1 block w-full"
-                classNamePrefix="react-select"
-                isClearable
-                placeholder="Select or type to search..."
-                required
-              />
-            </div>
           </div>
           <div className="flex gap-3 items-center">
             <label className="w-24 block text-sm font-medium text-gray-700">
@@ -269,23 +202,28 @@ const AddProduct = () => {
             />
           </div>
           <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+            onClick={handleSubmit}
+            className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
           >
-            Add Product
+            Save
           </button>
-        </form>
+          <button
+            onClick={() => navigate("/dashboard/all-products")}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+          >
+            Cancel
+          </button>
+        </div>
+        <ConfirmModal
+          action={"Edit"}
+          actionOn={"Product"}
+          isModalOpen={isModalOpen}
+          onCancel={closeModal}
+          onConfirm={handleSave}
+        />
       </div>
-
-      <ConfirmModal
-        action={"Add"}
-        actionOn={"Product"}
-        isModalOpen={isModalOpen}
-        onCancel={closeModal}
-        onConfirm={handleAddProduct}
-      />
     </div>
   );
 };
 
-export default AddProduct;
+export default EditProductPage;

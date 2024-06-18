@@ -6,6 +6,9 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
+  updatePassword,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { app } from "@/firebase/firebase.config.js";
 import { createContext, useEffect, useState } from "react";
@@ -42,7 +45,6 @@ const AuthProvider = ({ children }) => {
   };
 
   const googleLogin = async () => {
-    // Make googleLogin an asynchronous function
     try {
       setLoading(true);
       const res = await signInWithPopup(auth, googleProvider);
@@ -52,6 +54,43 @@ const AuthProvider = ({ children }) => {
       setLoading(false);
       console.error("Google login error:", error);
       throw error;
+    }
+  };
+
+  const updateUserProfile = async (updates) => {
+    try {
+      setLoading(true);
+      const res = await updateProfile(user, updates);
+      setLoading(false);
+      return res;
+    } catch (error) {
+      setLoading(false);
+      console.error("Error updating profile:", error);
+    }
+  };
+
+  const changePassword = async (newPassword) => {
+    try {
+      setLoading(true);
+      const res = await updatePassword(user, newPassword);
+      setLoading(false);
+      return res;
+    } catch (error) {
+      console.error("Error changing password:", error);
+      setLoading(false);
+    }
+  };
+
+  const resetPassword = async (email) => {
+    try {
+      setLoading(true);
+      const res = await sendPasswordResetEmail(auth, email);
+      setLoading(false);
+      return res;
+    } catch (error) {
+      setLoading(false);
+      console.error("Error sending password reset email:", error);
+      return error;
     }
   };
 
@@ -89,6 +128,9 @@ const AuthProvider = ({ children }) => {
     logOut,
     signIn,
     createUser,
+    updateUserProfile,
+    resetPassword,
+    changePassword,
   };
   return (
     <AuthContext.Provider value={AuthInfo}>
