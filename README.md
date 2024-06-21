@@ -1,15 +1,14 @@
 # Daily Hut
 
-Daily Hut is an E-commerce platform that offers a wide variety of products including fashion, technology, accessories, groceries, and more. It provides a seamless shopping experience with user-friendly features such as search functionality, category browsing, and easy checkout processes.
+Daily Hut is an E-commerce platform that offers a wide variety of products including fashion, technology, accessories, groceries, and more. It provides a seamless shopping experience with user-friendly features such as search functionality, category browsing, and easy dashboard maintaining process.
 
 ## Features
 
 - **Search and Browse Products:** Easily search for products using the search input or browse through categories.
 - **Shopping Cart:** Add products to the cart and proceed to a simple checkout process.
-- **Reviews and Ratings:** Users can provide reviews for products.
-- **Order Tracking:** Users can trace their orders from their dashboard.
+- **Upload Image:** User can upload images simply drag and drop or by browsing. The images will be stored in cloudinary.
 - **User Dashboard:** Access and update personal information from the dashboard.
-- **Admin/Shopkeeper Panel:** Admins or shopkeepers can add, delete, or update products and manage order states.
+- **Admin/Shopkeeper Panel:** Admins or shopkeepers can add, delete, or update products and manage user roles.
 
 ## Technology Stack
 
@@ -53,8 +52,8 @@ To set up the project on a local machine, follow these steps:
 
 To explore all features, you may need to log in or register on the app. For a tour of the shopkeeper features, you can use the following demo credentials:
 
-- **Email:** demoshopkeeper@dailyhut.com
-- **Password:** youAreNotAbleToChangeCredentials
+- **Email:** demoAdmin@gmail.com
+- **Password:** 123456
 
 ## Contributing
 
@@ -66,10 +65,10 @@ This project is licensed under the standard license.
 
 ## Screenshots
 
-![Home Page](url-to-screenshot)
-![Product Page](url-to-screenshot)
-![Dashboard](url-to-screenshot)
-![Admin Panel](url-to-screenshot)
+![Home Page](https://res.cloudinary.com/dax7yvopb/image/upload/v1718992206/screencapture-daily-hut-client-vercel-app-2024-06-21-23_48_46_gxaxa6.png)
+![Category Page]([url-to-screenshot](https://res.cloudinary.com/dax7yvopb/image/upload/v1718992212/screencapture-daily-hut-client-vercel-app-categories-2024-06-21-23_48_32_ilxngx.png))
+![Dashboard](https://res.cloudinary.com/dax7yvopb/image/upload/v1718992219/screencapture-daily-hut-client-vercel-app-dashboard-manage-users-2024-06-21-23_48_01_djqdl7.png)
+![Admin Panel]([url-to-screenshot](https://res.cloudinary.com/dax7yvopb/image/upload/v1718992219/screencapture-daily-hut-client-vercel-app-dashboard-manage-users-2024-06-21-23_48_01_djqdl7.png))
 
 ## Contact Information
 
