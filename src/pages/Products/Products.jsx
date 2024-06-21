@@ -15,7 +15,7 @@ const Products = () => {
   const loadProducts = async (page) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/v1/products?page=${page}`
+        `https://daily-hut-backend.vercel.app/api/v1/products?page=${page}`
       );
       if (response.status === 200) {
         setDisplayProducts(response.data.data);

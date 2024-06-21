@@ -7,7 +7,7 @@ export const CartContext = createContext(null);
 const CartProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0.0);
-  const cartApi = "http://localhost:5000/api/v1/cart";
+  const cartApi = "https://daily-hut-backend.vercel.app/api/v1/cart";
 
   useEffect(() => {
     const initializeCart = async () => {
@@ -150,7 +150,7 @@ const CartProvider = ({ children }) => {
       if (indexToRemove !== -1) {
         const removedItem = products_id.splice(indexToRemove, 1)[0];
         const rItem = await axios.get(
-          `http://localhost:5000/api/v1/products/${productId}`
+          `https://daily-hut-backend.vercel.app/api/v1/products/${productId}`
         );
         const product = rItem.data.data;
 
@@ -199,7 +199,7 @@ const CartProvider = ({ children }) => {
 
       if (indexToRemove !== -1) {
         const rItem = await axios.get(
-          `http://localhost:5000/api/v1/products/${productId}`
+          `https://daily-hut-backend.vercel.app/api/v1/products/${productId}`
         );
         const product = rItem.data.data;
 

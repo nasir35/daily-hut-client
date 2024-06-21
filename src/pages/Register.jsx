@@ -47,7 +47,7 @@ const Register = () => {
         const data = { email, password, role: "member" };
         await createUser(email, password);
         const res = await axios.post(
-          "http://localhost:5000/api/v1/users",
+          "https://daily-hut-backend.vercel.app/api/v1/users",
           data
         );
         if (res?.data) {
@@ -77,7 +77,7 @@ const Register = () => {
           name: data?.user?.displayName,
           role: "member",
         };
-        fetch("http://localhost:5000/api/v1/users", {
+        fetch("https://daily-hut-backend.vercel.app/api/v1/users", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

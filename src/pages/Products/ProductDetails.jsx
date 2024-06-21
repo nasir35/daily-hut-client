@@ -12,7 +12,7 @@ const ProductDetails = () => {
     async function load() {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/v1/products/${product_id}`
+          `https://daily-hut-backend.vercel.app/api/v1/products/${product_id}`
         );
         if (response.status === 200) {
           setProduct(response.data.data);

@@ -30,7 +30,7 @@ const AddCategory = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/v1/category"
+          "https://daily-hut-backend.vercel.app/api/v1/category"
         );
         if (response.status === 200) {
           setCategories(response.data.data);
@@ -105,7 +105,7 @@ const AddCategory = () => {
           newCategory.image_url;
         }
         const response = await axios.patch(
-          `http://localhost:5000/api/v1/category/${matched._id}`,
+          `https://daily-hut-backend.vercel.app/api/v1/category/${matched._id}`,
           newCategory,
           {
             headers: {
@@ -140,14 +140,17 @@ const AddCategory = () => {
           toast.error("Error. Image is required!", { autoClose: 1500 });
           return;
         }
-        const response = await fetch("http://localhost:5000/api/v1/category", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(newCategory),
-        });
+        const response = await fetch(
+          "https://daily-hut-backend.vercel.app/api/v1/category",
+          {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+              authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(newCategory),
+          }
+        );
         const data = await response.json();
         if (response.status === 200) {
           setLoading(false);

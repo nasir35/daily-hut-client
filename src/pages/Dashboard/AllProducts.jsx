@@ -19,7 +19,7 @@ const AllProducts = () => {
   const deleteProduct = async () => {
     try {
       const res = await axios.delete(
-        `http://localhost:5000/api/v1/products/${productId}`,
+        `https://daily-hut-backend.vercel.app/api/v1/products/${productId}`,
         {
           headers: { authorization: `Bearer ${token}` },
         }

@@ -28,7 +28,7 @@ const SearchBar = () => {
           setSuggestions([]);
         } else {
           const response = await axios.get(
-            `http://localhost:5000/api/v1/products/search-products?search=${query}`
+            `https://daily-hut-backend.vercel.app/api/v1/products/search-products?search=${query}`
           );
           if (response.status === 200) {
             setSuggestions(response.data.data.slice(0, 5));

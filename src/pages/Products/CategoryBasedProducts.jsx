@@ -15,10 +15,10 @@ const CategoryBasedProducts = () => {
     async function load() {
       try {
         const categoryResponse = await axios.get(
-          `http://localhost:5000/api/v1/category/${categoryId}`
+          `https://daily-hut-backend.vercel.app/api/v1/category/${categoryId}`
         );
         const productsResponse = await axios.get(
-          `http://localhost:5000/api/v1/products?category=${categoryTitle}`
+          `https://daily-hut-backend.vercel.app/api/v1/products?category=${categoryTitle}`
         );
         if (categoryResponse?.status === 200) {
           const category = categoryResponse.data.data;

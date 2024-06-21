@@ -29,7 +29,7 @@ const AddBrand = () => {
       const urls = await getImageURLs();
       brand.image_urls = urls[0];
       const res = await axios.post(
-        `http://localhost:5000/api/v1/brands`,
+        `https://daily-hut-backend.vercel.app/api/v1/brands`,
         brand,
         {
           headers: {

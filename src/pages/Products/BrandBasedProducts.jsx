@@ -14,10 +14,10 @@ const BrandBasedProducts = () => {
     async function load() {
       try {
         const BrandResponse = await axios.get(
-          `http://localhost:5000/api/v1/brands?name=${brandName}`
+          `https://daily-hut-backend.vercel.app/api/v1/brands?name=${brandName}`
         );
         const productsResponse = await axios.get(
-          `http://localhost:5000/api/v1/products?brand=${brandName}`
+          `https://daily-hut-backend.vercel.app/api/v1/products?brand=${brandName}`
         );
         if (BrandResponse?.status === 200) {
           const brand = BrandResponse.data.data;

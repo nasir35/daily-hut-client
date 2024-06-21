@@ -16,7 +16,9 @@ const AllCategory = () => {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/category");
+      const response = await axios.get(
+        "https://daily-hut-backend.vercel.app/api/v1/category"
+      );
       if (response.status === 200) {
         setCategories(response.data.data);
       } else {

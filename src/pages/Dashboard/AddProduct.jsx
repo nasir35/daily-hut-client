@@ -49,8 +49,8 @@ const AddProduct = () => {
     async function loadCategoriesAndBrands() {
       try {
         const [categoryRes, brandRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/v1/category"),
-          axios.get("http://localhost:5000/api/v1/brands"),
+          axios.get("https://daily-hut-backend.vercel.app/api/v1/category"),
+          axios.get("https://daily-hut-backend.vercel.app/api/v1/brands"),
         ]);
 
         if (categoryRes.status === 200) {
@@ -94,7 +94,7 @@ const AddProduct = () => {
     if (selectedOption) {
       try {
         const data = await axios.get(
-          `http://localhost:5000/api/v1/category/subcategories/${selectedOption.value}`
+          `https://daily-hut-backend.vercel.app/api/v1/category/subcategories/${selectedOption.value}`
         );
         if (data.status === 200) {
           setSubcategories(
@@ -138,7 +138,7 @@ const AddProduct = () => {
       };
 
       const productResponse = await axios.post(
-        `http://localhost:5000/api/v1/products/`,
+        `https://daily-hut-backend.vercel.app/api/v1/products/`,
         updatedProduct,
         {
           headers: {
@@ -196,14 +196,14 @@ const AddProduct = () => {
   const saveNewVal = async (newVal, route) => {
     if (!route.includes("category/")) {
       const res = await axios.post(
-        `http://localhost:5000/api/v1/${route}/`,
+        `https://daily-hut-backend.vercel.app/api/v1/${route}/`,
         newVal,
         { headers: { authorization: `Bearer ${token}` } }
       );
       return res;
     } else {
       const res = await axios.patch(
-        `http://localhost:5000/api/v1/${route}/`,
+        `https://daily-hut-backend.vercel.app/api/v1/${route}/`,
         newVal,
         { headers: { authorization: `Bearer ${token}` } }
       );
@@ -234,11 +234,11 @@ const AddProduct = () => {
           if (matched) {
             try {
               const savedData = await axios.get(
-                `http://localhost:5000/api/v1/category?name=${matched.label}`
+                `https://daily-hut-backend.vercel.app/api/v1/category?name=${matched.label}`
               );
               newVal.itemsCount = savedData.data?.data[0]?.itemsCount || 0;
               const response = await axios.patch(
-                `http://localhost:5000/api/v1/category/${matched.value}`,
+                `https://daily-hut-backend.vercel.app/api/v1/category/${matched.value}`,
                 newVal,
                 {
                   headers: {

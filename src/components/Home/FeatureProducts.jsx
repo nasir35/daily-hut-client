@@ -12,7 +12,7 @@ const FeaturedProducts = () => {
       try {
         setLoading(true);
         const electronicRes = await axios.get(
-          "http://localhost:5000/api/v1/products?category=Electronics&limit=4"
+          "https://daily-hut-backend.vercel.app/api/v1/products?category=Electronics&limit=4"
         );
 
         if (electronicRes.status === 200) {

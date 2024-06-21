@@ -21,7 +21,7 @@ const Profile = () => {
   useEffect(() => {
     async function getUser() {
       const userData = await axios.get(
-        `http://localhost:5000/api/v1/users/get-with-email/${user.email}`,
+        `https://daily-hut-backend.vercel.app/api/v1/users/get-with-email/${user.email}`,
         { headers: { authorization: `Bearer ${token}` } }
       );
       if (userData) {
@@ -52,7 +52,7 @@ const Profile = () => {
     if (user?.email) {
       try {
         const result = await axios.patch(
-          `http://localhost:5000/api/v1/users/get-with-email/${user.email}`,
+          `https://daily-hut-backend.vercel.app/api/v1/users/get-with-email/${user.email}`,
           profile,
           { headers: { authorization: `Bearer ${token}` } }
         );

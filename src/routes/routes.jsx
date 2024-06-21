@@ -106,7 +106,9 @@ const router = createBrowserRouter([
         path: "all-products",
         element: <AllProducts />,
         loader: async () => {
-          return await fetch("http://localhost:5000/api/v1/products");
+          return await fetch(
+            "https://daily-hut-backend.vercel.app/api/v1/products"
+          );
         },
       },
       {

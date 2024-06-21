@@ -33,7 +33,7 @@ const ViewCart = () => {
       }
       const productPromises = cartDetails.products_id.map(async (idObject) => {
         const response = await axios.get(
-          `http://localhost:5000/api/v1/products/${idObject.id}`
+          `https://daily-hut-backend.vercel.app/api/v1/products/${idObject.id}`
         );
         return response.data.data;
       });
@@ -47,7 +47,7 @@ const ViewCart = () => {
 
   const changeQuantity = async (itemId, increment) => {
     let product = await axios.get(
-      `http://localhost:5000/api/v1/products/${itemId}`
+      `https://daily-hut-backend.vercel.app/api/v1/products/${itemId}`
     );
     product = product.data.data;
     if (increment > 0) {

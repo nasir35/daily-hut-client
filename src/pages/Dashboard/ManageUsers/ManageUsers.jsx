@@ -22,11 +22,14 @@ const ManageUsers = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/users", {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://daily-hut-backend.vercel.app/api/v1/users",
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (response.status === 200) {
         setUsers(response.data.data);
       }
@@ -64,7 +67,7 @@ const ManageUsers = () => {
   const updateUserRole = async () => {
     try {
       const res = await axios.patch(
-        `http://localhost:5000/api/v1/users/get-with-email/${selectedUser.email}`,
+        `https://daily-hut-backend.vercel.app/api/v1/users/get-with-email/${selectedUser.email}`,
         { role: selectedRole },
         {
           headers: {

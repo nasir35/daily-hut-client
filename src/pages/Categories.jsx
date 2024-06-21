@@ -6,7 +6,9 @@ const Categories = () => {
   const [categories, setCategories] = useState(null);
   useEffect(() => {
     async function load() {
-      const res = await axios.get("http://localhost:5000/api/v1/category");
+      const res = await axios.get(
+        "https://daily-hut-backend.vercel.app/api/v1/category"
+      );
       if (res?.status === 200) {
         setCategories(res?.data.data);
       }

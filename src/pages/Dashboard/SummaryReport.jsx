@@ -14,17 +14,17 @@ const SummaryReport = () => {
     const fetchData = async () => {
       try {
         const productResponse = await axios.get(
-          "http://localhost:5000/api/v1/products"
+          "https://daily-hut-backend.vercel.app/api/v1/products"
         );
         const userResponse = await axios.get(
-          "http://localhost:5000/api/v1/users/users-count",
+          "https://daily-hut-backend.vercel.app/api/v1/users/users-count",
           { headers: { authorization: `Bearer ${token}` } }
         );
         const brandResponse = await axios.get(
-          "http://localhost:5000/api/v1/brands"
+          "https://daily-hut-backend.vercel.app/api/v1/brands"
         );
         const categoryResponse = await axios.get(
-          "http://localhost:5000/api/v1/category"
+          "https://daily-hut-backend.vercel.app/api/v1/category"
         );
 
         setProductCount(productResponse.data.totalProducts);

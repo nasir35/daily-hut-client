@@ -42,7 +42,7 @@ const InputModal = ({ isOpen, onRequestClose, handleNewVal, callingFrom }) => {
       try {
         const selectedCategory = callingFrom?.split("/")[2];
         const response = await axios.get(
-          `http://localhost:5000/api/v1/category?name=${selectedCategory}`
+          `https://daily-hut-backend.vercel.app/api/v1/category?name=${selectedCategory}`
         );
         if (response.status === 200) {
           const categoryDetails = response?.data?.data[0];

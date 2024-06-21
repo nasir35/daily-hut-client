@@ -12,7 +12,7 @@ const TrendingProducts = () => {
       try {
         setLoading(true);
         const carRes = await axios.get(
-          "http://localhost:5000/api/v1/products?category=car&limit=4"
+          "https://daily-hut-backend.vercel.app/api/v1/products?category=car&limit=4"
         );
 
         if (carRes.status === 200) {

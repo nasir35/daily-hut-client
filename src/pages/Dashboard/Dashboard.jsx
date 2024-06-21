@@ -14,18 +14,18 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const brandsResponse = await axios.get(
-          "http://localhost:5000/api/v1/brands"
+          "https://daily-hut-backend.vercel.app/api/v1/brands"
         );
         setBrands(brandsResponse.data.data);
 
         const usersResponse = await axios.get(
-          "http://localhost:5000/api/v1/users/users-count",
+          "https://daily-hut-backend.vercel.app/api/v1/users/users-count",
           { headers: { authorization: `Bearer ${token}` } }
         );
         setUsers(usersResponse.data.data);
 
         const categoriesResponse = await axios.get(
-          "http://localhost:5000/api/v1/category"
+          "https://daily-hut-backend.vercel.app/api/v1/category"
         );
         setCategories(categoriesResponse.data.data);
       } catch (error) {

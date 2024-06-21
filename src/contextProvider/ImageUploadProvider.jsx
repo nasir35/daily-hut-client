@@ -15,7 +15,7 @@ const ImageUploadProvider = ({ children }) => {
     });
 
     const imageUploadResponse = await axios.post(
-      `http://localhost:5000/api/v1/uploads/product-images`,
+      `https://daily-hut-backend.vercel.app/api/v1/uploads/product-images`,
       imageFormData,
       {
         headers: {

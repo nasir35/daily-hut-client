@@ -8,7 +8,7 @@ const ProductCategories = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/v1/category"
+          "https://daily-hut-backend.vercel.app/api/v1/category"
         );
         if (response.status === 200) {
           setCategories(response.data.data);

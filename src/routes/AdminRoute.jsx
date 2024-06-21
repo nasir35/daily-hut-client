@@ -13,7 +13,7 @@ const AdminRoute = ({ children }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/v1/users/get-with-email/${user?.email}`
+          `https://daily-hut-backend.vercel.app/api/v1/users/get-with-email/${user?.email}`
         );
         if (response?.status === 200) {
           setFetchedUser(response?.data.data);
