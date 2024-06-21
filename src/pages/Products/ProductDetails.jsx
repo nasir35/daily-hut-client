@@ -6,6 +6,7 @@ import useCart from "@/hooks/useCart";
 const ProductDetails = () => {
   const { product_id } = useParams();
   const [product, setProduct] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -16,6 +17,7 @@ const ProductDetails = () => {
         );
         if (response.status === 200) {
           setProduct(response.data.data);
+          setSelectedImage(response.data.data.image_urls[0]);
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -28,16 +30,8 @@ const ProductDetails = () => {
     return <div>Loading...</div>;
   }
 
-  const {
-    _id,
-    title,
-    price,
-    quantity,
-    brand,
-    image_urls,
-    category,
-    description,
-  } = product;
+  const { title, price, quantity, brand, image_urls, category, description } =
+    product;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -45,10 +39,25 @@ const ProductDetails = () => {
         <div className="md:flex">
           <div className="md:flex-shrink-0">
             <img
-              className="h-64 w-full object-contain md:w-64"
-              src={image_urls[0]}
+              className="h-64 w-full object-contain md:w-96"
+              src={selectedImage}
               alt={title}
             />
+            <div className="mt-4 flex space-x-2 overflow-x-auto">
+              {image_urls.map((url, index) => (
+                <img
+                  key={index}
+                  className={`h-16 w-16 object-contain cursor-pointer border ${
+                    selectedImage === url
+                      ? "border-blue-500"
+                      : "border-gray-300"
+                  }`}
+                  src={url}
+                  alt={`Thumbnail ${index}`}
+                  onClick={() => setSelectedImage(url)}
+                />
+              ))}
+            </div>
           </div>
           <div className="p-8">
             <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
@@ -69,7 +78,7 @@ const ProductDetails = () => {
           </div>
         </div>
         <div className="p-4">
-          <p className=" text-gray-600">{description}</p>
+          <p className="text-gray-600">{description}</p>
         </div>
       </div>
     </div>
