@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import LoadingSpinner from "@/components/Shared/LoadingSpinner/LoadingSpinner";
 
 const SummaryReport = () => {
   const [productCount, setProductCount] = useState(0);
@@ -27,7 +28,7 @@ const SummaryReport = () => {
         );
 
         setProductCount(productResponse.data.totalProducts);
-        setUserCount(userResponse.data);
+        setUserCount(userResponse.data.data);
         setCategoryCount(categoryResponse.data.data.length);
         setBrandsCount(brandResponse.data.data.length);
         setLoading(false);
@@ -43,7 +44,7 @@ const SummaryReport = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        Loading...
+        <LoadingSpinner />
       </div>
     );
   }
@@ -51,7 +52,7 @@ const SummaryReport = () => {
   return (
     <div className="container mx-auto mt-8">
       <h1 className="text-2xl font-semibold mb-8">Summary</h1>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-5 text-center">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 text-center">
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4 border-b-2 border-gray-200 pb-1 ">
             Total Products
@@ -72,7 +73,7 @@ const SummaryReport = () => {
           <h2 className="text-xl font-semibold mb-4 border-b-2 border-gray-200 pb-1 ">
             Total Brands
           </h2>
-          <p className="text-4xl font-bold">{categoryCount}</p>
+          <p className="text-4xl font-bold">{brandsCount}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4 border-b-2 border-gray-200 pb-1 ">

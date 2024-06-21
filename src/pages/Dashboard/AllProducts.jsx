@@ -10,7 +10,7 @@ const AllProducts = () => {
   const token = localStorage.getItem("token");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productId, setProductId] = useState(null);
-  const data = useLoaderData().data;
+  const data = useLoaderData()?.data;
   const navigate = useNavigate();
   const handleDelete = (id) => {
     setProductId(id);
@@ -18,14 +18,19 @@ const AllProducts = () => {
   };
   const deleteProduct = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/products/${productId}`, {
-        headers: { authorization: `Bearer ${token}` },
-      });
-      toast.success("Product Deleted!");
-      setTimeout(() => {
-        navigate("/dashboard/all-products");
-        closeModal();
-      }, 1000);
+      const res = await axios.delete(
+        `http://localhost:5000/api/v1/products/${productId}`,
+        {
+          headers: { authorization: `Bearer ${token}` },
+        }
+      );
+      if (res.status === 200) {
+        toast.success("Product Deleted!");
+        setTimeout(() => {
+          navigate("/dashboard/all-products");
+          closeModal();
+        }, 1000);
+      }
     } catch (error) {
       console.error("Error deleting product:", error);
       toast.error("Failed to delete product");

@@ -12,10 +12,10 @@ const ProductDetails = () => {
     async function load() {
       try {
         const response = await axios.get(
-          `http://localhost:3000/products/${product_id}`
+          `http://localhost:5000/api/v1/products/${product_id}`
         );
         if (response.status === 200) {
-          setProduct(response.data);
+          setProduct(response.data.data);
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -29,7 +29,7 @@ const ProductDetails = () => {
   }
 
   const {
-    id,
+    _id,
     title,
     price,
     quantity,
@@ -45,7 +45,7 @@ const ProductDetails = () => {
         <div className="md:flex">
           <div className="md:flex-shrink-0">
             <img
-              className="h-64 w-full object-cover md:w-64"
+              className="h-64 w-full object-contain md:w-64"
               src={image_urls[0]}
               alt={title}
             />

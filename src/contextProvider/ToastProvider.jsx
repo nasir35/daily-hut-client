@@ -7,7 +7,7 @@ const ToastProvider = ({ children }) => {
   return (
     <>
       <ToastContainer
-        autoClose={3000}
+        autoClose={2000}
         position="top-right"
         hideProgressBar={false}
         newestOnTop={true}

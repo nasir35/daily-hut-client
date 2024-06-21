@@ -371,7 +371,7 @@ const DashboardLayout = () => {
             </div>
           )}
         </header>
-        <main className="flex-1 px-3 lg:p-4 overflow-y-auto bg-gray-100">
+        <main className="flex-1 p-3  lg:p-4 overflow-y-auto bg-gray-100">
           <Outlet />
         </main>
       </div>

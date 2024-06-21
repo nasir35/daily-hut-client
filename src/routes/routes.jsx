@@ -30,6 +30,8 @@ import SummaryReport from "../pages/Dashboard/SummaryReport";
 import ViewCart from "../pages/Dashboard/ViewCart";
 import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
 import AddBrand from "../pages/Dashboard/AddBrand";
+import ContactUs from "../pages/ContactUs";
+import BrandBasedProducts from "../pages/Products/BrandBasedProducts";
 
 const router = createBrowserRouter([
   {
@@ -60,6 +62,10 @@ const router = createBrowserRouter([
             element: <CategoryBasedProducts />,
           },
           {
+            path: "brand/:brandName",
+            element: <BrandBasedProducts />,
+          },
+          {
             path: "product-details/:product_id",
             element: <ProductDetails />,
           },
@@ -68,6 +74,10 @@ const router = createBrowserRouter([
       {
         path: "/categories",
         element: <Categories />,
+      },
+      {
+        path: "/contact-us",
+        element: <ContactUs />,
       },
       {
         path: "/login",
@@ -171,10 +181,10 @@ const router = createBrowserRouter([
     path: "/not-authorized",
     element: <NotAuthorized />,
   },
-  // {
-  //   path: "/test",
-  //   element: < />,
-  // },
+  {
+    path: "*",
+    element: <NotFound />,
+  },
 ]);
 
 export default router;

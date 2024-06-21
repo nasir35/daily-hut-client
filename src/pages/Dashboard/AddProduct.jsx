@@ -33,7 +33,7 @@ const AddProduct = () => {
   const [subcategories, setSubcategories] = useState([]);
   const { isModalOpen, openModal, closeModal } = useModal();
   const [loading, setLoading] = useState(false);
-  const { getImageURLs } = useImageUpload();
+  const { getImageURLs, images } = useImageUpload();
   const [callingFrom, setCallingFrom] = useState(null);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -122,6 +122,11 @@ const AddProduct = () => {
   const handleAddProduct = async () => {
     try {
       setLoading(true);
+      if (images.length === 0) {
+        toast.warning("Please upload product images.");
+        setLoading(false);
+        return;
+      }
       let uploadedImageUrls = await getImageURLs();
       if (!uploadedImageUrls) {
         toast.error("Image uploading failed!", { autoClose: 1500 });
@@ -175,10 +180,6 @@ const AddProduct = () => {
         });
         return;
       }
-    }
-    if (name === "quantity") {
-      value = parseInt(value);
-      toast.error("Quantity must be an integer value", { autoClose: 1000 });
     }
     if (name === "rating") {
       if (value < 0 || value > 5) {
@@ -334,7 +335,6 @@ const AddProduct = () => {
             handleNewVal={handleNewVal}
             callingFrom={callingFrom}
           />
-          ;
           <div className="flex gap-3 items-center">
             <label className="w-24 block text-sm font-medium text-gray-700">
               Name

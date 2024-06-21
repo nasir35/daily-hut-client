@@ -89,7 +89,7 @@ const SearchBar = () => {
                 onClick={handleSuggestionClick}
               >
                 <Link to={`/products/product-details/${product._id}`}>
-                  {product.name}
+                  {product.name.slice(0, 35)}
                 </Link>
               </li>
             ))}

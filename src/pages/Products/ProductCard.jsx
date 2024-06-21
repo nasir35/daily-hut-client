@@ -12,6 +12,7 @@ import {
 
 import useCart from "@/hooks/useCart";
 import HoverToolTip from "../../components/HoverToolTip";
+import { Link } from "react-router-dom";
 const ProductCard = ({ data }) => {
   const { _id, name, price, brand, image_urls } = data;
   const rating = data?.rating || 4;
@@ -19,7 +20,10 @@ const ProductCard = ({ data }) => {
   const { addToCart } = useCart();
 
   return (
-    <div className="relative cursor-pointer overflow-hidden border rounded-lg shadow-lg transition-shadow duration-300 p-4">
+    <Link
+      to={`/products/product-details/${_id}`}
+      className="relative block h-full cursor-pointer overflow-hidden border rounded-lg shadow-lg transition-shadow duration-300 p-4"
+    >
       <img
         src={
           image_urls != undefined
@@ -73,7 +77,7 @@ const ProductCard = ({ data }) => {
           </HoverToolTip>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

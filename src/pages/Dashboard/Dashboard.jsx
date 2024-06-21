@@ -5,7 +5,7 @@ import axios from "axios";
 import { Bar } from "react-chartjs-2";
 Chart.register(CategoryScale);
 const Dashboard = () => {
-  const [products, setProducts] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const token = localStorage.getItem("token");
@@ -13,10 +13,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productsResponse = await axios.get(
-          "http://localhost:5000/api/v1/products"
+        const brandsResponse = await axios.get(
+          "http://localhost:5000/api/v1/brands"
         );
-        setProducts(productsResponse.data.data);
+        setBrands(brandsResponse.data.data);
 
         const usersResponse = await axios.get(
           "http://localhost:5000/api/v1/users/users-count",
@@ -35,41 +35,45 @@ const Dashboard = () => {
 
     fetchData();
   }, []);
-  // Example chart data
-  const productsChartData = {
-    labels: ["Product 1", "Product 2", "Product 3", "Product 4", "Product 5"],
+
+  let topBrands = brands
+    .sort((a, b) => b.itemsCount - a.itemsCount)
+    .slice(0, 4);
+  let brandsNames = topBrands.map((c) => c.name);
+  let brandItems = topBrands.map((c) => c.itemsCount);
+  const productsByBrandChartData = {
+    labels: [...brandsNames],
     datasets: [
       {
         label: "Product Quantity",
-        data: [10, 20, 15, 25, 30],
+        data: [...brandItems],
         backgroundColor: "#4F46E5",
       },
     ],
   };
 
   const usersChartData = {
-    labels: ["Admins", "Users", "Shopkeepers"],
+    labels: ["Admins", "Suppliers", "Members"],
     datasets: [
       {
         label: "User Count",
-        data: [5, 20, 15],
-        backgroundColor: "#F87171",
+        data: [users.adminsCount, users.suppliersCount, users.membersCount],
+        backgroundColor: ["#26648e", "#4f8fc0", "#53d2dc"],
       },
     ],
   };
 
+  let topCategories = categories
+    .sort((a, b) => b.itemsCount - a.itemsCount)
+    .slice(0, 4);
+  let categoryNames = topCategories.map((c) => c.name);
+  let categoryItems = topCategories.map((c) => c.itemsCount);
   const categoriesChartData = {
-    labels: [
-      "Category 1",
-      "Category 2",
-      "Category 3",
-      "Category 4",
-      "Category 5",
-    ],
+    labels: [...categoryNames],
     datasets: [
       {
         label: "Category Count",
-        data: [8, 15, 10, 20, 12],
+        data: [...categoryItems],
         backgroundColor: "#34D399",
       },
     ],
@@ -78,13 +82,13 @@ const Dashboard = () => {
   return (
     <div>
       <h3 className="text-center text-xl font-medium text-orange-700">
-        Dummy data charts
+        Summary Charts
       </h3>
       <div className="container mx-auto grid lg:grid-cols-2 grid-cols-1 gap-7">
         {/* Products Chart */}
         <div className="my-8">
-          <h2 className="text-xl font-semibold mb-4">Products Chart</h2>
-          <Bar data={productsChartData} />
+          <h2 className="text-xl font-semibold mb-4">Top Brand By Products</h2>
+          <Bar data={productsByBrandChartData} />
         </div>
 
         {/* Users Chart */}
@@ -95,7 +99,9 @@ const Dashboard = () => {
 
         {/* Categories Chart */}
         <div className="my-8">
-          <h2 className="text-xl font-semibold mb-4">Categories Chart</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Top Categories By Products
+          </h2>
           <Bar data={categoriesChartData} />
         </div>
       </div>

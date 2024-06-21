@@ -9,7 +9,15 @@ const ProductRow = ({ index, product, handleDelete }) => {
         <div className="flex items-center gap-3">
           <div className="avatar">
             <div className="mask mask-squircle w-12 h-12">
-              <img src={image_urls[0]} alt={title} className="object-contain" />
+              <img
+                src={
+                  image_urls[0]
+                    ? image_urls[0]
+                    : "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg"
+                }
+                alt={title}
+                className="object-contain"
+              />
             </div>
           </div>
           <div>
