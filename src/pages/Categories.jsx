@@ -6,9 +6,9 @@ const Categories = () => {
   const [categories, setCategories] = useState(null);
   useEffect(() => {
     async function load() {
-      const data = await axios.get("http://localhost:5000/categories");
-      if (data?.status === 200) {
-        setCategories(data?.data);
+      const res = await axios.get("http://localhost:5000/api/v1/category");
+      if (res?.status === 200) {
+        setCategories(res?.data.data);
       }
     }
     load();
@@ -22,7 +22,7 @@ const Categories = () => {
       <div className="grid grid-cols-4 gap-x-5 gap-y-7 mb-8 px-10">
         {categories &&
           categories.map((category) => (
-            <CategoryCard key={category.id} category={category} />
+            <CategoryCard key={category._id} category={category} />
           ))}
       </div>
     </div>

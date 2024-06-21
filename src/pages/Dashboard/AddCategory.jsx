@@ -5,12 +5,16 @@ import useAuth from "@/hooks/useAuth";
 import ConfirmModal from "@/components/Shared/ConfirmModal";
 import useModal from "../../hooks/useModal";
 import axios from "axios";
+import UploadImage from "../../components/Shared/UploadImage";
+import useImageUpload from "../../hooks/useImageUpload";
 
 const AddCategory = () => {
   const token = localStorage.getItem("token");
   const { user } = useAuth();
   const { isModalOpen, openModal, closeModal } = useModal();
   const [categories, setCategories] = useState([]);
+  const { getImageURLs } = useImageUpload();
+  const [loading, setLoading] = useState(false);
   const [newCategory, setNewCategory] = useState({
     addedBy: user?.email,
     name: "",
@@ -55,7 +59,7 @@ const AddCategory = () => {
   const handleSubCategoryKeyPress = (e) => {
     if ((e.key === "Enter" || e.key === " ") && subCategoryInput.trim()) {
       e.preventDefault();
-      if (/^[a-zA-Z\s]+$/.test(subCategoryInput.trim())) {
+      if (/^[a-zA-Z\s-_]+$/.test(subCategoryInput.trim())) {
         setNewCategory((prevCategory) => ({
           ...prevCategory,
           subCategories: [
@@ -65,9 +69,12 @@ const AddCategory = () => {
         }));
         setSubCategoryInput("");
       } else {
-        toast.error("Subcategory must contain only letters.", {
-          autoClose: 2000,
-        });
+        toast.error(
+          "Subcategory must contain only letters, underscore or hyphen.",
+          {
+            autoClose: 2000,
+          }
+        );
       }
     }
   };
@@ -86,24 +93,31 @@ const AddCategory = () => {
 
   const handleAddCategory = async () => {
     try {
+      setLoading(true);
       let matched = categories.find(
         (c) => c.name.toLowerCase() === newCategory.name.toLowerCase()
       );
       if (matched) {
-        const response = await fetch(
-          `http://localhost:5000/categories/${matched._id}`,
+        try {
+          const urls = await getImageURLs();
+          newCategory.image_url = urls[0];
+        } catch (err) {
+          newCategory.image_url;
+        }
+        const response = await axios.patch(
+          `http://localhost:5000/api/v1/category/${matched._id}`,
+          newCategory,
           {
-            method: "PATCH",
             headers: {
-              "Content-type": "application/json",
               authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(newCategory),
           }
         );
-        const data = await response.json();
-        if (response.ok) {
-          toast.success("Category Added Successfully!", { autoClose: 2000 });
+        const data = response.data;
+        console.log(data);
+        if (response.status === 200) {
+          setLoading(false);
+          toast.success("Category updated Successfully!", { autoClose: 2000 });
           setNewCategory({
             addedBy: user?.email,
             name: "",
@@ -115,10 +129,17 @@ const AddCategory = () => {
             navigate("/dashboard/all-categories");
           }, 1000);
         } else {
-          toast.error("Failed to Add new Category!", { autoClose: 3000 });
+          toast.error("Failed to update the Category!", { autoClose: 2000 });
           console.log("Failed to add category:", data);
         }
       } else {
+        try {
+          const urls = await getImageURLs();
+          newCategory.image_url = urls[0];
+        } catch (err) {
+          toast.error("Error. Image is required!", { autoClose: 1500 });
+          return;
+        }
         const response = await fetch("http://localhost:5000/api/v1/category", {
           method: "POST",
           headers: {
@@ -128,7 +149,8 @@ const AddCategory = () => {
           body: JSON.stringify(newCategory),
         });
         const data = await response.json();
-        if (response.ok) {
+        if (response.status === 200) {
+          setLoading(false);
           toast.success("Category Added Successfully!", { autoClose: 2000 });
           setNewCategory({
             addedBy: user?.email,
@@ -141,6 +163,7 @@ const AddCategory = () => {
             navigate("/dashboard/all-categories");
           }, 1000);
         } else {
+          setLoading(false);
           toast.error("Failed to Add new Category!", { autoClose: 3000 });
           console.log("Failed to add category:", data);
         }
@@ -149,6 +172,7 @@ const AddCategory = () => {
       console.log("Failed to add category:", e);
       toast.error("Failed to Add new Category!", { autoClose: 3000 });
     } finally {
+      setLoading(false);
       closeModal();
     }
   };
@@ -200,18 +224,8 @@ const AddCategory = () => {
               ))}
             </div>
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Image URL</label>
-            <input
-              type="text"
-              name="image_url"
-              placeholder="https://m.media-amazon.com/images/I/515c+nXHjQL._AC_SY741_.jpg"
-              value={newCategory.image_url}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              required
-            />
-          </div>
+
+          <UploadImage numberOfImages={1} />
           <button
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
@@ -233,6 +247,7 @@ const AddCategory = () => {
         onConfirm={handleAddCategory}
         onCancel={closeModal}
         isModalOpen={isModalOpen}
+        loading={loading}
       />
     </div>
   );

@@ -3,22 +3,23 @@ import useModal from "@/hooks/useModal";
 import useAuth from "../../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import ConfirmModal from "@/components/Shared/ConfirmModal";
 
 const ChangePassword = () => {
   const { user, changePassword } = useAuth();
   const [userPassword, setUserPassword] = useState(null);
   const { isModalOpen, openModal, closeModal } = useModal();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/user/${user?.email}`
+          `http://localhost:5000/api/v1/users/get-with-email/${user?.email}`
         );
         if (response.status === 200) {
-          setUserPassword(response.data?.password);
+          setUserPassword(response.data?.data?.password);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -49,14 +50,14 @@ const ChangePassword = () => {
 
       const res = await changePassword(data.newPassword);
       const DBres = await axios.patch(
-        `http://localhost:5000/user/${user?.email}`,
-        { password: data.newPassword }
+        `http://localhost:5000/api/v1/users/get-with-email/${user?.email}`,
+        { password: data.newPassword },
+        { headers: { authorization: `Bearer ${token}` } }
       );
-
+      closeModal();
       toast.success("Password changed successfully!");
     } catch (error) {
       console.error("Error updating password:", error);
-      // Handle error (e.g., show error message)
     }
   };
 
@@ -67,6 +68,7 @@ const ChangePassword = () => {
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
+      <ToastContainer />
       <h2 className="text-2xl font-bold mb-4">
         {userPassword === undefined ? "Set New Password" : "Change Password"}
       </h2>
@@ -79,6 +81,7 @@ const ChangePassword = () => {
               name="currentPassword"
               className="border p-2 rounded w-full"
               required
+              autoComplete="true"
             />
           </div>
         )}
@@ -89,6 +92,7 @@ const ChangePassword = () => {
             name="newPassword"
             className="border p-2 rounded w-full"
             required
+            autoComplete="true"
           />
         </div>
         <div className="mb-4">
@@ -98,6 +102,7 @@ const ChangePassword = () => {
             name="confirmPassword"
             className="border p-2 rounded w-full"
             required
+            autoComplete="true"
           />
         </div>
         <div className="flex gap-3">
@@ -116,10 +121,11 @@ const ChangePassword = () => {
         </div>
       </form>
       <ConfirmModal
-        action="Change"
+        action={`${userPassword === undefined ? "Set" : "Change"}`}
         actionOn="Password"
         onConfirm={updatePassword}
         isModalOpen={isModalOpen}
+        onCancel={closeModal}
       />
     </div>
   );

@@ -7,13 +7,13 @@ const ToastProvider = ({ children }) => {
   return (
     <>
       <ToastContainer
-        autoClose={3000} // default autoClose duration
+        autoClose={3000}
         position="top-right"
         hideProgressBar={false}
         newestOnTop={true}
         closeOnClick={true}
         rtl={false}
-        pauseOnFocusLoss={true}
+        pauseOnFocusLoss={false}
         draggable={true}
         pauseOnHover={true}
       />

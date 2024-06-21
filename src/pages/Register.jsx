@@ -46,15 +46,21 @@ const Register = () => {
       try {
         const data = { email, password, role: "member" };
         await createUser(email, password);
-        const res = await axios.post("http://localhost:5000/user", data);
+        const res = await axios.post(
+          "http://localhost:5000/api/v1/users",
+          data
+        );
         if (res?.data) {
-          localStorage.setItem("token", res.data?.token);
+          localStorage.setItem("token", res.data?.data);
+          toast.success("registration success.", { autoClose: 1000 });
         }
       } catch (error) {
         if (error.code === "auth/email-already-in-use") {
-          toast.error("Email is already in use!");
+          toast.error("Email is already in use!", { autoClose: 1000 });
         } else {
-          toast.error("Failed to register. Please try again.");
+          toast.error("Failed to register. Please try again.", {
+            autoClose: 2000,
+          });
         }
         console.error("Error during registration:", error);
       }
@@ -63,28 +69,31 @@ const Register = () => {
     }
   };
 
-  const handleGoogleSignUp = async () => {
-    try {
-      await googleLogin();
-    } catch (error) {
-      toast.error("Failed to sign up with Google. Please try again.");
-      console.error("Error during Google sign-up:", error);
-    }
+  const handleGoogleSignUp = () => {
+    googleLogin().then((data) => {
+      if (data?.user?.email) {
+        const userInfo = {
+          email: data?.user?.email,
+          name: data?.user?.displayName,
+          role: "member",
+        };
+        fetch("http://localhost:5000/api/v1/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userInfo),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            localStorage.setItem("token", data?.data);
+          });
+      }
+    });
   };
 
   return (
     <div className="hero xl:py-10 lg:py-8 py-5 bg-base-200">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       <div className="hero-content py-0 flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <h1 className="xl:text-5xl text-4xl font-bold">Register now!</h1>

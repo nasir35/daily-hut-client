@@ -7,7 +7,11 @@ const CategoryCard = ({ category }) => {
     <div className="card card-compact w-full bg-base-100 shadow-xl">
       <figure>
         <img
-          src={image_url}
+          src={
+            image_url
+              ? image_url
+              : "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg"
+          }
           alt={name}
           className="w-full max-h-[200px] min-h-[200px] object-contain object-center p-3"
         />

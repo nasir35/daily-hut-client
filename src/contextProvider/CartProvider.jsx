@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export const CartContext = createContext(null);
 
@@ -127,6 +128,7 @@ const CartProvider = ({ children }) => {
           headers: { authorization: `Bearer ${token}` },
         });
       }
+      toast.success("Added to cart", { autoClose: 1000 });
     } catch (error) {
       console.error("Error adding to cart:", error);
     }

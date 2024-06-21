@@ -21,12 +21,19 @@ const ProductCard = ({ data }) => {
   return (
     <div className="relative cursor-pointer overflow-hidden border rounded-lg shadow-lg transition-shadow duration-300 p-4">
       <img
-        src={image_urls[0]}
+        src={
+          image_urls != undefined
+            ? image_urls[0]
+            : "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg"
+        }
         alt={name}
         className="w-full min-h-[180px] max-h-[180px] mb-5 object-contain"
       />
       <div className="text-left">
-        <h6 className="text-base font-normal mb-2">{name}</h6>
+        <h6 className="text-base font-normal mb-2">
+          {name.slice(0, 50)}
+          {name.length > 50 && "..."}
+        </h6>
         <p className="text-base font-normal mb-2">Brand : {brand}</p>
         <p className="text-gray-600 mb-2">$ {parseFloat(price).toFixed(2)}</p>
         <div className="flex items-center gap-1 text-orange-500">

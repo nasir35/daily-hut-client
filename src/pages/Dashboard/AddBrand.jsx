@@ -1,14 +1,16 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import Select from "react-select";
+import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ConfirmModal from "@/components/Shared/ConfirmModal";
 import useAuth from "@/hooks/useAuth";
 import useModal from "../../hooks/useModal";
+import UploadImage from "../../components/Shared/UploadImage";
+import useImageUpload from "../../hooks/useImageUpload";
 
 const AddBrand = () => {
   const { user } = useAuth();
+  const { getImageURLs } = useImageUpload();
   const token = localStorage.getItem("token");
   const initialBrandState = {
     addedBy: user?.email,
@@ -19,9 +21,13 @@ const AddBrand = () => {
 
   const [brand, setBrand] = useState(initialBrandState);
   const { isModalOpen, openModal, closeModal } = useModal();
+  const [loading, setLoading] = useState(false);
 
   const handleAddBrand = async () => {
+    setLoading(true);
     try {
+      const urls = await getImageURLs();
+      brand.image_urls = urls[0];
       const res = await axios.post(
         `http://localhost:5000/api/v1/brands`,
         brand,
@@ -39,6 +45,7 @@ const AddBrand = () => {
       toast.error("Failed to add brand.", { autoClose: 2000 });
       console.error(error);
     }
+    setLoading(false);
     closeModal();
   };
 
@@ -88,18 +95,11 @@ const AddBrand = () => {
               required
             />
           </div>
-          <div className="flex gap-3 items-center">
-            <label className="w-24 block text-sm font-medium text-gray-700">
-              Image URL
+          <div className="flex flex-col gap-3">
+            <label className="block text-sm font-medium text-gray-700">
+              Upload Brand Image
             </label>
-            <input
-              type="text"
-              name="image_urls"
-              placeholder="https://www.example.com/media/example.jpg"
-              value={brand.image_urls}
-              onChange={handleChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            />
+            <UploadImage numberOfImages={1} />
           </div>
           <button
             type="submit"
@@ -116,6 +116,7 @@ const AddBrand = () => {
         isModalOpen={isModalOpen}
         onCancel={closeModal}
         onConfirm={handleAddBrand}
+        loading={loading}
       />
     </div>
   );

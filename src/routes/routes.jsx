@@ -171,6 +171,10 @@ const router = createBrowserRouter([
     path: "/not-authorized",
     element: <NotAuthorized />,
   },
+  // {
+  //   path: "/test",
+  //   element: < />,
+  // },
 ]);
 
 export default router;

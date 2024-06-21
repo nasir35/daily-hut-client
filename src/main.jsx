@@ -6,15 +6,18 @@ import router from "./routes/routes.jsx";
 import AuthProvider from "./contextProvider/AuthProvider.jsx";
 import CartProvider from "./contextProvider/CartProvider.jsx";
 import ToastProvider from "./contextProvider/ToastProvider.jsx";
+import ImageUploadProvider from "./contextProvider/ImageUploadProvider.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>
-      <CartProvider>
-        <ToastProvider>
-          <RouterProvider router={router} />
-        </ToastProvider>
-      </CartProvider>
+      <ImageUploadProvider>
+        <CartProvider>
+          <ToastProvider>
+            <RouterProvider router={router} />
+          </ToastProvider>
+        </CartProvider>
+      </ImageUploadProvider>
     </AuthProvider>
   </React.StrictMode>
 );

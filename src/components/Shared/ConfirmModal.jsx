@@ -7,6 +7,7 @@ const ConfirmModal = ({
   onConfirm,
   onCancel,
   isModalOpen,
+  loading,
 }) => {
   if (!isModalOpen) return null;
 
@@ -22,9 +23,10 @@ const ConfirmModal = ({
         <div className="flex justify-end space-x-4">
           <button
             onClick={onConfirm}
+            disabled={loading}
             className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300"
           >
-            Yes
+            {loading ? "Processing..." : `Yes, ${action}`}
           </button>
           <button
             onClick={onCancel}

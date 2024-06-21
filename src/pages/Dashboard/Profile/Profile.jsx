@@ -6,6 +6,7 @@ const Profile = () => {
   const { user } = useAuth();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const token = localStorage.getItem("token");
   const [profile, setProfile] = useState({
     name: "Not set",
     email: user?.email,
@@ -20,16 +21,15 @@ const Profile = () => {
   useEffect(() => {
     async function getUser() {
       const userData = await axios.get(
-        `https://daily-hut-backend.vercel.app/user/${user.email}`
+        `http://localhost:5000/api/v1/users/get-with-email/${user.email}`,
+        { headers: { authorization: `Bearer ${token}` } }
       );
       if (userData) {
-        let { _id, ...fetchedData } = userData.data;
-        console.log(fetchedData);
+        let { _id, ...fetchedData } = userData.data.data;
         setProfile({ ...profile, ...fetchedData });
       }
     }
     getUser();
-    console.log(profile);
   }, [user]);
 
   const handleProfileEditToggle = () => {
@@ -52,8 +52,9 @@ const Profile = () => {
     if (user?.email) {
       try {
         const result = await axios.patch(
-          `https://daily-hut-backend.vercel.app/user/${user.email}`,
-          profile
+          `http://localhost:5000/api/v1/users/get-with-email/${user.email}`,
+          profile,
+          { headers: { authorization: `Bearer ${token}` } }
         );
       } catch (e) {
         console.log(e);

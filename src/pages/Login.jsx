@@ -21,10 +21,10 @@ const Login = () => {
         role: "member",
       };
       await signIn(data.email, data.password);
-      const res = await axios.post("http://localhost:5000/user", data);
+      const res = await axios.post("http://localhost:5000/api/v1/users", data);
       console.log(res);
       if (res?.data) {
-        localStorage.setItem("token", res.data?.token);
+        localStorage.setItem("token", res.data?.data);
       }
     } catch (e) {
       toast.error(`Login Failed due to ${e.code}`);
@@ -39,7 +39,7 @@ const Login = () => {
           name: data?.user?.displayName,
           role: "member",
         };
-        fetch("https://daily-hut-backend.vercel.app/user", {
+        fetch("http://localhost:5000/api/v1/users", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -48,8 +48,9 @@ const Login = () => {
         })
           .then((res) => res.json())
           .then((data) => {
-            localStorage.setItem("token", data?.token);
+            localStorage.setItem("token", data?.data);
           });
+        toast.success("login success");
       }
     });
   };
@@ -61,17 +62,6 @@ const Login = () => {
   }, [user, from, navigate]);
   return (
     <div className="hero min-h-screen bg-base-200">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
           <h1 className="xl:text-5xl text-4xl font-bold">Login now!</h1>

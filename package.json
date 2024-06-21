@@ -16,7 +16,9 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "axios": "^1.7.2",
+    "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.3",
+    "cloudinary-react": "^1.8.1",
     "firebase": "^10.12.2",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
@@ -26,7 +28,8 @@
     "react-router-dom": "^6.23.1",
     "react-select": "^5.8.0",
     "react-toastify": "^10.0.5",
-    "sort-by": "^1.2.0"
+    "sort-by": "^1.2.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
