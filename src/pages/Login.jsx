@@ -21,10 +21,7 @@ const Login = () => {
         role: "member",
       };
       await signIn(data.email, data.password);
-      const res = await axios.post(
-        "https://daily-hut-backend.vercel.app/api/v1/users",
-        data
-      );
+      const res = await axios.post("https://daily-hut-backend.vercel.app/api/v1/users", data);
       console.log(res);
       if (res?.data) {
         localStorage.setItem("token", res.data?.data);

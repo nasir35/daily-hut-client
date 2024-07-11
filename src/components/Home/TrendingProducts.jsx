@@ -12,7 +12,7 @@ const TrendingProducts = () => {
       try {
         setLoading(true);
         const carRes = await axios.get(
-          "https://daily-hut-backend.vercel.app/api/v1/products?category=car&limit=4"
+          "https://daily-hut-backend.vercel.app/api/v1/products?category=Vehicle&limit=4"
         );
 
         if (carRes.status === 200) {
@@ -25,6 +25,7 @@ const TrendingProducts = () => {
     };
     fetchData();
   }, []);
+  console.log(trendingProducts);
   if (loading) return <LoadingSpinner />;
   return (
     <section className="py-20 bg-gray-100">
